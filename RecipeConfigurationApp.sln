@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecipeConfigurationApp", "RecipeConfigurationApp\RecipeConfigurationApp.csproj", "{24ED1C77-25B1-4C54-9F12-D1F2BA3641B5}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "RecipeConfogurationInstaller", "RecipeConfogurationInstaller\RecipeConfogurationInstaller.vdproj", "{F7FBF40A-15E6-431D-AD8B-F5B5509EDAE7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,8 @@ Global
 		{24ED1C77-25B1-4C54-9F12-D1F2BA3641B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24ED1C77-25B1-4C54-9F12-D1F2BA3641B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24ED1C77-25B1-4C54-9F12-D1F2BA3641B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7FBF40A-15E6-431D-AD8B-F5B5509EDAE7}.Debug|Any CPU.ActiveCfg = Debug
+		{F7FBF40A-15E6-431D-AD8B-F5B5509EDAE7}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

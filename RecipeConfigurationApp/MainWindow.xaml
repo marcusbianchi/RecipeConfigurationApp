@@ -3,10 +3,118 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         xmlns:local="clr-namespace:RecipeConfigurationApp"
+        xmlns:geared="clr-namespace:LiveCharts.Geared;assembly=LiveCharts.Geared"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        
-    </Grid>
+        Title="Recipe Configuration Service" Height="auto" Width="1200" Icon="img/aviation-icon.png" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Image x:Key="MyImage" Source="./img/menu-icon.png"/>
+        <ContextMenu x:Key="cmButton">
+            <MenuItem Header="Novo" Click="CleanMemory_Click"/>
+            <MenuItem Header="Salvar" Click="SaveFile_Click" />
+            <MenuItem Header="Carregar" Click="ReadFile_Click"/>
+            <MenuItem Header="Exportar para PDF" Click="SavePDF_Click"/>
+
+        </ContextMenu>
+    </Window.Resources>
+    <Border BorderBrush="Black" BorderThickness="0.5">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="*"/>
+                
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="15*"/>
+                    <ColumnDefinition Width="15*"/>
+                    <ColumnDefinition Width="15*"/>
+                </Grid.ColumnDefinitions>
+                <Button Content="{StaticResource MyImage}" Background="White" Click="Button_Click_1"/>
+                <Image Source="./img/embraer-logo-1.png" Margin="2" Grid.Column="1"/>
+                <Image Source="./img/aviation-icon.png" Margin="2"  Grid.Column="2"/>
+                <Image Source="./img/SPI_Logo_FundoClaro.png"  Margin="2" Grid.Column="3"/>
+            </Grid>
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="1" Content="Pressão" Name="btnPressure" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" Click="btnPressure_Click" />
+                <Button Grid.Column="0" Content="Temperatura" Name="btnTemperature" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" Click="btnTemperature_Click" />
+                <Button Grid.Column="2" Content="Vacuo" Name="btnVacuum" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" Click="btnVacuum_Click" />
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="7*"/>
+                    <ColumnDefinition Width="4*"/>
+                </Grid.ColumnDefinitions>
+                <Border BorderBrush="Black" >
+                    <Grid Name="gridValues">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="1" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0" Margin="1"/>
+                            <TextBox Grid.Column="1" Margin="1"/>
+                            <TextBox Grid.Column="2" Margin="1"/>
+                            <TextBox Grid.Column="3" Margin="1"/>
+                            <TextBox Grid.Column="4" Margin="1"/>
+                            <TextBox Grid.Column="5" Margin="1"/>
+                            <TextBox Grid.Column="6" Margin="1"/>
+                        </Grid>
+                        <Grid Grid.Row="0" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button  Margin="1" Content="Adicionar/Editar"  Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" Click="Button_Click"/>
+                            <Button Name="Excluir" Grid.Column="1"  Margin="1" Content="Excluir"  Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" Click="Excluir_Click"/>
+                        </Grid>
+                        <DataGrid Grid.Row="2" Name="ValueGrid" BorderBrush="Transparent" AutoGenerateColumns="true"
+                                  ItemsSource="{Binding Path=List, Mode=TwoWay}"  CanUserAddRows="False">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Tipo" Width="*" />
+                                <DataGridTextColumn Header="SetPoint" Width="*" />
+                                <DataGridTextColumn Header="Taxa" Width="*" />
+                                <DataGridTextColumn Header="Tempo" Width="*" />
+                                <DataGridTextColumn Header="Tolerância" Width="*" />
+                                <DataGridTextColumn Header="Tx Máx" Width="*" />
+                                <DataGridTextColumn Header="Tx Min" Width="*" />
+                                <DataGridTextColumn Header="Temp Máx" Width="*" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Border>
+                <Border  BorderBrush="Black" Grid.Column="1">
+                    <lvc:CartesianChart DisableAnimations="True"  Name="valueChart" Margin="1" LegendLocation="Bottom">
+                        <lvc:CartesianChart.AxisY>
+                            <lvc:Axis Title="Sales" ></lvc:Axis>
+                        </lvc:CartesianChart.AxisY>
+                        <lvc:CartesianChart.AxisX>
+                            <lvc:Axis Title="Month" ></lvc:Axis>
+                        </lvc:CartesianChart.AxisX>
+                    </lvc:CartesianChart>
+                </Border>
+              
+            </Grid>
+        </Grid>
+    </Border>
 </Window>
+
+    
