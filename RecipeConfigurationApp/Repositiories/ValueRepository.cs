@@ -50,12 +50,12 @@ namespace RecipeConfigurationApp.Repositiories
                     var Taxa = Convert.ToDouble(convValue.Taxa, CultureInfo.InvariantCulture);
                     convValue.Tempo = !String.IsNullOrEmpty(convValue.Tempo) ?
                         convValue.Tempo :
-                        Convert.ToInt32(Math.Abs((setPoint-lastSetPoint)/ Taxa)).ToString();
+                        Convert.ToInt32(Math.Abs((setPoint-lastSetPoint)/ Taxa)).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
                     if (!String.IsNullOrEmpty(convValue.Taxa))
                     {
                         if (setPoint < lastSetPoint && Convert.ToDouble(convValue.Taxa, CultureInfo.InvariantCulture) > 0)
                         {
-                            convValue.Taxa = (-Convert.ToDouble(convValue.Taxa, CultureInfo.InvariantCulture)).ToString();
+                            convValue.Taxa = (-Convert.ToDouble(convValue.Taxa, CultureInfo.InvariantCulture)).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
                         }
                     }
                     value = (T)Convert.ChangeType(convValue, typeof(T));

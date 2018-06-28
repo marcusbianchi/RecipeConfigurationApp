@@ -1,7 +1,4 @@
-﻿using LiveCharts;
-using LiveCharts.Geared;
-using LiveCharts.Wpf;
-using RecipeConfigurationApp.Model;
+﻿using RecipeConfigurationApp.Model;
 using RecipeConfigurationApp.Repositiories;
 using System;
 using System.Collections.Generic;
@@ -9,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls.DataVisualization.Charting;
 using System.Windows.Media;
 
 namespace RecipeConfigurationApp.Managers
@@ -21,37 +19,26 @@ namespace RecipeConfigurationApp.Managers
             _pressureRepositoy = pressureRepositoy;
         }
 
-        public override void PlotValues(CartesianChart chart)
+        public override void PlotValues(Chart chart)
         {
             List<double> xValues, yValues;
             GenerateValues(out xValues, out yValues);
-            ChartValues<ObservablePoint> ListPoints = new ChartValues<ObservablePoint>();
+            List<KeyValuePair<double, double>> valueList = new List<KeyValuePair<double, double>>();
             for (int i = 0; i < xValues.Count; i++)
             {
-                ListPoints.Add(new ObservablePoint
-                {
-                    X = xValues[i],
-                    Y = yValues[i]
-                });
+                valueList.Add(new KeyValuePair<double, double>(xValues[i], yValues[i]));
             }
-            var brush = new SolidColorBrush(Colors.Orange);
-            brush.Opacity = 0.25;
-            var series = new LineSeries();
-            series.Values = ListPoints;
-            series.Title = "Vacum";
-            series.Stroke = new SolidColorBrush(Colors.OrangeRed);
-            series.LineSmoothness = 0;
-            series.PointGeometry = null;
-            series.Fill = brush;
-            var seriesCollection = new SeriesCollection { series };
-            if (chart.AxisY[0] != null && chart.AxisY[0].Labels != null)
-                chart.AxisY[0].Labels.Clear();
-            if (chart.Series != null)
-                chart.Series.Clear();
-            chart.AxisY[0].Title = "Vacuum (bar)";
-            chart.AxisX[0].Title = "Tempo (min)";           
-            chart.Series = seriesCollection;
+            chart.Title = "Vácuo (bar) x Tempo(min)";
+            ((LinearAxis)chart.ActualAxes[0]).Minimum = 0;
+            if (xValues.Count > 0)
+            {
+                ((LinearAxis)chart.ActualAxes[0]).Minimum = 1;
+                ((LinearAxis)chart.ActualAxes[0]).Maximum = xValues.Max() + ((LinearAxis)chart.ActualAxes[0]).ActualInterval;
+            }
+            ((LineSeries)chart.Series[0]).ItemsSource = null;
+            ((LineSeries)chart.Series[0]).ItemsSource = valueList;
 
+      
         }
 
         public void GenerateValues(out List<double> xValues, out List<double> yValues)

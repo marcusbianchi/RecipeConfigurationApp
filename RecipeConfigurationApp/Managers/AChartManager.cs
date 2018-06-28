@@ -4,13 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls.DataVisualization.Charting;
 
 namespace RecipeConfigurationApp.Managers
 {
     public abstract class AChartManager
     {
         private readonly double range = 0.01;
-        public abstract void PlotValues(CartesianChart chart);
+        public abstract void PlotValues(Chart chart);
 
         internal (List<double>, List<double>) GenerateIncreasingValue(double? startTime, double? startPoint, double SetPoint, double rate)
         {
@@ -26,13 +27,15 @@ namespace RecipeConfigurationApp.Managers
             double tempo = Math.Abs(SetPoint - startPoint.Value) / Math.Abs(rate);
             if (startPoint.Value > SetPoint && rate > 0)
                 rate = -rate;
-            double b = SetPoint - rate * (startTime.Value + tempo);  
-            for (double x = Convert.ToDouble(startTime) + range; x <= Convert.ToDouble(startTime.Value + tempo); x += range)
-            {
-                var y = rate * x + b;
-                xValues.Add(Math.Round(x,2));
-                yValues.Add(Math.Round(y, 2));
-            }
+            double b = SetPoint - rate * (startTime.Value + tempo);
+            double x = Convert.ToDouble(startTime);
+            var y = rate * x + b;
+            xValues.Add(Math.Round(x, 2));
+            yValues.Add(Math.Round(y, 2));
+            x = Convert.ToDouble(startTime.Value + tempo);
+            y = rate * x + b;
+            xValues.Add(Math.Round(x, 2));
+            yValues.Add(Math.Round(y, 2));
             return (xValues, yValues);
 
         }
@@ -49,12 +52,13 @@ namespace RecipeConfigurationApp.Managers
                 yValues.Add(SetPoint);
 
             }
-            for (double x = Convert.ToDouble(startTime) + range; x <= Convert.ToDouble(startTime.Value + tempo); x += range)
-            {
-                var y = SetPoint;
-                xValues.Add(Math.Round(x, 2));
-                yValues.Add(Math.Round(y, 2));
-            }
+            double x = Convert.ToDouble(startTime);
+            var y = SetPoint;
+            xValues.Add(Math.Round(x, 2));
+            yValues.Add(Math.Round(y, 2));
+            x = Convert.ToDouble(startTime.Value + tempo);
+            xValues.Add(Math.Round(x, 2));
+            yValues.Add(Math.Round(y, 2));
             return (xValues, yValues);
         }
     }

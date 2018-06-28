@@ -90,6 +90,7 @@ namespace RecipeConfigurationApp
             {
                 _vacuumChartManager.PlotValues(valueChart);
             }
+
         }
 
         private void btnPressure_Click(object sender, RoutedEventArgs e)
@@ -225,7 +226,7 @@ namespace RecipeConfigurationApp
                     }
                     catch (Exception ex)
                     {
-                       MessageBox.Show("An error has occured:" +ex.Message, "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show("An error has occured:" + ex.Message, "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }).Start();
             }
