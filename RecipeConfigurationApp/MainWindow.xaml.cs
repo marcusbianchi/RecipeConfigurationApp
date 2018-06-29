@@ -40,6 +40,7 @@ namespace RecipeConfigurationApp
         private readonly AChartManager _temperatureChartManager;
         private readonly IFileControl _fileControl;
         private readonly IPDFControl _pdfControl;
+        public string currentFileName;
 
         private IList<Control> controls;
         private string currentStatus = "Temperature";
@@ -70,6 +71,7 @@ namespace RecipeConfigurationApp
                 (VacuumChartManager)_vacuumChartManager);
 
             gridValues.Children[2].Visibility = Visibility.Hidden;
+            TotalTIme.Text = "Tempo total: " + _temperatures.getTotalTime().ToString();
             UpdateGrid();
             MainWindow_CollectionChanged();
 
@@ -96,6 +98,7 @@ namespace RecipeConfigurationApp
         private void btnPressure_Click(object sender, RoutedEventArgs e)
         {
             currentStatus = "Pressure";
+            TotalTIme.Text = "Tempo total: " + _pressures.getTotalTime().ToString();
             UpdateGrid();
             MainWindow_CollectionChanged();
         }
@@ -103,6 +106,7 @@ namespace RecipeConfigurationApp
         private void btnTemperature_Click(object sender, RoutedEventArgs e)
         {
             currentStatus = "Temperature";
+            TotalTIme.Text = "Tempo total: " + _temperatures.getTotalTime().ToString();
             UpdateGrid();
             MainWindow_CollectionChanged();
 
@@ -111,6 +115,7 @@ namespace RecipeConfigurationApp
         private void btnVacuum_Click(object sender, RoutedEventArgs e)
         {
             currentStatus = "Vacuum";
+            TotalTIme.Text = "Tempo total: "+ _vacuums.getTotalTime().ToString();
             UpdateGrid();
             MainWindow_CollectionChanged();
         }
@@ -129,12 +134,17 @@ namespace RecipeConfigurationApp
                 {
                     case "Vacuum":
                         _vacuums.addValue(value as VacuumValue);
+                        TotalTIme.Text = "Tempo total: " + _vacuums.getTotalTime().ToString();
                         break;
                     case "Pressure":
                         _pressures.addValue(value as PressureValue);
+                        TotalTIme.Text = "Tempo total: " + _pressures.getTotalTime().ToString();
+
                         break;
                     case "Temperature":
                         _temperatures.addValue(value as TemperatureValue);
+                        TotalTIme.Text = "Tempo total: " + _temperatures.getTotalTime().ToString();
+
                         break;
                     default:
                         throw new FormatException("Data Type Not Found");
@@ -190,6 +200,7 @@ namespace RecipeConfigurationApp
             SaveFileDialog dialog = new SaveFileDialog()
             {
                 Filter = "Text Files(*.txt)|*.txt|All(*.*)|*",
+                FileName = currentFileName
 
             };
 
@@ -209,7 +220,7 @@ namespace RecipeConfigurationApp
             SaveFileDialog dialog = new SaveFileDialog()
             {
                 Filter = "PDF Files(*.pdf)|*.pdf|All(*.*)|*",
-
+                FileName = currentFileName.Split('.')[0] + ".pdf"
             };
             if (dialog.ShowDialog() == true)
             {
@@ -244,11 +255,14 @@ namespace RecipeConfigurationApp
             if (dialog.ShowDialog() == true)
             {
                 var fileName = dialog.FileName;
+                currentFileName = System.IO.Path.GetFileName(fileName);
                 if (System.IO.File.Exists(fileName))
                 {
                     _fileControl.ReadFromFile(fileName);
                 }
             }
+            TotalTIme.Text = "Tempo total: " +_temperatures.getTotalTime().ToString();
+
             ValueGrid.Items.Refresh();
             MainWindow_CollectionChanged();
 

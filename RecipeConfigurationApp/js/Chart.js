@@ -36,7 +36,7 @@ $.plot("#ChartDiv1", [
 ], {
         xaxis: {
             min: 1,
-            max: topx[topx.length-1]
+            max: topx[0]
         },
         yaxes: [{
             position: "left", tickLength: 0, font: {

@@ -20,5 +20,7 @@ namespace RecipeConfigurationApp.Repositiories
         int getLastId();
         Plot _plot { get;  set; }
 
+        int getTotalTime();
+
     }
 }

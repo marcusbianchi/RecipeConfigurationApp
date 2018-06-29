@@ -103,13 +103,13 @@ namespace RecipeConfigurationApp.File
                 tempValue.Id = i.ToString();
                 string type = values[0] == "0" ? "Rampa" : "Patamar";
                 tempValue.Tipo = type;
-                tempValue.SetPoint = values[1];
-                tempValue.Taxa = values[2];
+                tempValue.SetPoint = String.IsNullOrEmpty(values[1])? null : Convert.ToDouble(values[1], System.Globalization.CultureInfo.InvariantCulture).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+                tempValue.Taxa = String.IsNullOrEmpty(values[2]) ? null : Convert.ToDouble(values[2], System.Globalization.CultureInfo.InvariantCulture).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
                 tempValue.Tempo = values[3];
-                tempValue.Tolerancia = values[4];
-                tempValue.TxMinima = values[5];
-                tempValue.TxMaxima = values[6];
-                tempValue.TempoHold = values[7];
+                tempValue.Tolerancia = String.IsNullOrEmpty(values[4]) ? null : Convert.ToDouble(values[4], System.Globalization.CultureInfo.InvariantCulture).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+                tempValue.TxMinima = String.IsNullOrEmpty(values[5]) ? null : Convert.ToDouble(values[5], System.Globalization.CultureInfo.InvariantCulture).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+                tempValue.TxMaxima = String.IsNullOrEmpty(values[6]) ? null : Convert.ToDouble(values[6], System.Globalization.CultureInfo.InvariantCulture).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+                tempValue.TempoHold = String.IsNullOrEmpty(values[7]) ? null : Convert.ToDouble(values[7], System.Globalization.CultureInfo.InvariantCulture).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
                 _temperatureRepository.addValue(tempValue);
                 i += 10;
                 line = sr.ReadLine();
@@ -133,11 +133,10 @@ namespace RecipeConfigurationApp.File
                 vacValue.Id = i.ToString();
                 string type = values[0] == "0" ? "Rampa" : "Patamar";
                 vacValue.Tipo = type;
-                vacValue.SetPoint = values[1];
-                vacValue.Taxa = values[2];
+                vacValue.SetPoint = String.IsNullOrEmpty(values[1]) ? null : Convert.ToDouble(values[1], System.Globalization.CultureInfo.InvariantCulture).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+                vacValue.Taxa = String.IsNullOrEmpty(values[2]) ? null : Convert.ToDouble(values[2], System.Globalization.CultureInfo.InvariantCulture).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
                 vacValue.Tempo = values[3];
-                vacValue.Tolerancia = values[4];
-
+                vacValue.Tolerancia = String.IsNullOrEmpty(values[4]) ? null : Convert.ToDouble(values[4], System.Globalization.CultureInfo.InvariantCulture).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
                 _vacauumRepository.addValue(vacValue);
                 i += 10;
                 line = sr.ReadLine();
@@ -161,10 +160,10 @@ namespace RecipeConfigurationApp.File
                 presValue.Id = i.ToString();
                 string type = values[0] == "0" ? "Rampa" : "Patamar";
                 presValue.Tipo = type;
-                presValue.SetPoint = values[1];
-                presValue.Taxa = values[2];
+                presValue.SetPoint = String.IsNullOrEmpty(values[1]) ? null : Convert.ToDouble(values[1], System.Globalization.CultureInfo.InvariantCulture).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture); ;
+                presValue.Taxa = String.IsNullOrEmpty(values[2]) ? null : Convert.ToDouble(values[2], System.Globalization.CultureInfo.InvariantCulture).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture); 
                 presValue.Tempo = values[3];
-                presValue.Tolerancia = values[4];
+                presValue.Tolerancia = String.IsNullOrEmpty(values[4]) ? null : Convert.ToDouble(values[4], System.Globalization.CultureInfo.InvariantCulture).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
                 i += 10;
                 _pressureRepository.addValue(presValue);
                 line = sr.ReadLine();

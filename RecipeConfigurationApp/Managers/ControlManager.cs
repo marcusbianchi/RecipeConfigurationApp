@@ -3,6 +3,7 @@ using RecipeConfigurationApp.Repositiories;
 using RecipeConfigurationApp.Validation;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -190,7 +191,7 @@ namespace RecipeConfigurationApp.Managers
 
             (_controlList.Where(x => x.Name == "Tolerancia").FirstOrDefault() as TextBox).Text = TempValue.Tolerancia;
 
-            if ((_controlList.Where(x => x.Name == "TxMaxima").FirstOrDefault() as TextBox).IsEnabled)                
+            if ((_controlList.Where(x => x.Name == "TxMaxima").FirstOrDefault() as TextBox).IsEnabled)
                 (_controlList.Where(x => x.Name == "TxMaxima").FirstOrDefault() as TextBox).Text = TempValue.TxMaxima;
 
             if ((_controlList.Where(x => x.Name == "TxMinima").FirstOrDefault() as TextBox).IsEnabled)
@@ -295,6 +296,12 @@ namespace RecipeConfigurationApp.Managers
             newValue.Tempo = (_controlList.Where(x => x.Name == "Tempo").FirstOrDefault() as TextBox).Text;
             newValue.Tolerancia = (_controlList.Where(x => x.Name == "Tolerancia").FirstOrDefault() as TextBox).Text;
             newValue.Tipo = (_controlList.Where(x => x.Name == "Tipo").FirstOrDefault() as ComboBox).SelectedValue as string;
+
+            newValue.SetPoint = String.IsNullOrEmpty(newValue.SetPoint) ? null: Convert.ToDouble(newValue.SetPoint, CultureInfo.InvariantCulture).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+            newValue.Taxa = String.IsNullOrEmpty(newValue.Taxa) ? null : Convert.ToDouble(newValue.Taxa, CultureInfo.InvariantCulture).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+            newValue.Tolerancia = String.IsNullOrEmpty(newValue.Tolerancia) ? null : Convert.ToDouble(newValue.Tolerancia, CultureInfo.InvariantCulture).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+
+
             if (presValidation.isInputValid(newValue))
             {
                 CleanPressure();
@@ -318,6 +325,12 @@ namespace RecipeConfigurationApp.Managers
             newValue.TxMinima = (_controlList.Where(x => x.Name == "TxMinima").FirstOrDefault() as TextBox).Text;
             newValue.TempoHold = (_controlList.Where(x => x.Name == "TempoHold").FirstOrDefault() as TextBox).Text;
 
+            newValue.SetPoint = String.IsNullOrEmpty(newValue.SetPoint) ? null : Convert.ToDouble(newValue.SetPoint, CultureInfo.InvariantCulture).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+            newValue.Taxa = String.IsNullOrEmpty(newValue.Taxa) ? null : Convert.ToDouble(newValue.Taxa, CultureInfo.InvariantCulture).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+            newValue.Tolerancia = String.IsNullOrEmpty(newValue.Tolerancia) ? null : Convert.ToDouble(newValue.Tolerancia, CultureInfo.InvariantCulture).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+            newValue.TxMaxima = String.IsNullOrEmpty(newValue.TxMaxima) ? null : Convert.ToDouble(newValue.TxMaxima, CultureInfo.InvariantCulture).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+            newValue.TxMinima = String.IsNullOrEmpty(newValue.TxMinima) ? null : Convert.ToDouble(newValue.TxMinima, CultureInfo.InvariantCulture).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+
             if (tempValidation.isInputValid(newValue))
             {
                 CleanTemperature();
@@ -337,6 +350,12 @@ namespace RecipeConfigurationApp.Managers
             newValue.Tempo = (_controlList.Where(x => x.Name == "Tempo").FirstOrDefault() as TextBox).Text;
             newValue.Tolerancia = (_controlList.Where(x => x.Name == "Tolerancia").FirstOrDefault() as TextBox).Text;
             newValue.Tipo = (_controlList.Where(x => x.Name == "Tipo").FirstOrDefault() as ComboBox).SelectedValue as string;
+
+            newValue.SetPoint = String.IsNullOrEmpty(newValue.SetPoint) ? null : Convert.ToDouble(newValue.SetPoint, CultureInfo.InvariantCulture).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+            newValue.Taxa = String.IsNullOrEmpty(newValue.Taxa) ? null : Convert.ToDouble(newValue.Taxa, CultureInfo.InvariantCulture).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+            newValue.Tolerancia = String.IsNullOrEmpty(newValue.Tolerancia) ? null : Convert.ToDouble(newValue.Tolerancia, CultureInfo.InvariantCulture).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+
+
             if (vacuumValidation.isInputValid(newValue))
             {
                 CleanVacuum();

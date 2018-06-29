@@ -24,16 +24,14 @@ namespace RecipeConfigurationApp.Managers
                 xValues.Add(1);
                 yValues.Add(0);
             }
-            double tempo = Math.Abs(SetPoint - startPoint.Value) / Math.Abs(rate);
+            int tempo = Convert.ToInt32(Math.Abs(SetPoint - startPoint.Value) / Math.Abs(rate));
             if (startPoint.Value > SetPoint && rate > 0)
                 rate = -rate;
             double b = SetPoint - rate * (startTime.Value + tempo);
             double x = Convert.ToDouble(startTime);
+
+            x = Convert.ToInt32(startTime.Value + tempo);
             var y = rate * x + b;
-            xValues.Add(Math.Round(x, 2));
-            yValues.Add(Math.Round(y, 2));
-            x = Convert.ToDouble(startTime.Value + tempo);
-            y = rate * x + b;
             xValues.Add(Math.Round(x, 2));
             yValues.Add(Math.Round(y, 2));
             return (xValues, yValues);
@@ -52,12 +50,10 @@ namespace RecipeConfigurationApp.Managers
                 yValues.Add(SetPoint);
 
             }
-            double x = Convert.ToDouble(startTime);
+            int x = Convert.ToInt32(startTime);
             var y = SetPoint;
-            xValues.Add(Math.Round(x, 2));
-            yValues.Add(Math.Round(y, 2));
-            x = Convert.ToDouble(startTime.Value + tempo);
-            xValues.Add(Math.Round(x, 2));
+            x = Convert.ToInt32(startTime.Value + tempo);
+            xValues.Add(x);
             yValues.Add(Math.Round(y, 2));
             return (xValues, yValues);
         }

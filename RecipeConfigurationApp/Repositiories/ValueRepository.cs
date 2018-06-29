@@ -50,7 +50,7 @@ namespace RecipeConfigurationApp.Repositiories
                     var Taxa = Convert.ToDouble(convValue.Taxa, CultureInfo.InvariantCulture);
                     convValue.Tempo = !String.IsNullOrEmpty(convValue.Tempo) ?
                         convValue.Tempo :
-                        Convert.ToInt32(Math.Abs((setPoint-lastSetPoint)/ Taxa)).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+                        Convert.ToInt32(Math.Abs((setPoint - lastSetPoint) / Taxa)).ToString("0", System.Globalization.CultureInfo.InvariantCulture);
                     if (!String.IsNullOrEmpty(convValue.Taxa))
                     {
                         if (setPoint < lastSetPoint && Convert.ToDouble(convValue.Taxa, CultureInfo.InvariantCulture) > 0)
@@ -113,7 +113,7 @@ namespace RecipeConfigurationApp.Repositiories
         {
             if (_values.Count > 0)
             {
-                var curdIdsList = _values.Cast<ConfigValue>().Select(x => Convert.ToInt32(x.Id)).OrderByDescending(x=>x).ToList();
+                var curdIdsList = _values.Cast<ConfigValue>().Select(x => Convert.ToInt32(x.Id)).OrderByDescending(x => x).ToList();
                 var lastId = curdIdsList.Where(x => x < curId).FirstOrDefault();
                 var itemObj = _values.Cast<ConfigValue>().Where(x => Convert.ToInt32(x.Id) == lastId).FirstOrDefault();
                 if (itemObj == null)
@@ -166,5 +166,15 @@ namespace RecipeConfigurationApp.Repositiories
             return _values;
         }
 
+        public int getTotalTime()
+        {
+            int total = 1;
+            foreach (var item in _values.Cast<ConfigValue>())
+            {
+                total += Convert.ToInt32(item.Tempo);
+
+            }
+            return total;
+        }
     }
 }

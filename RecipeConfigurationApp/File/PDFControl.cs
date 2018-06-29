@@ -59,8 +59,13 @@ namespace RecipeConfigurationApp.File
 
 
 
-            var chart1 = " <div id=\"ChartDiv1\"style=\"width: 900px; height: 350px; \"></div>" + "<br> <br> <br>";
+            var chart1 = " <div id=\"ChartDiv1\"style=\"width: 900px; height: 350px; \"></div>";
 
+            var tempTotalValue = "<div> <h6> <b>Tempo Total Temperatura: </b>" + _temperatureRepository.getTotalTime() +" min</h6></div><div><h6>"
+                + "<b>Tempo Total Vácuo: </b>" + _vacauumRepository.getTotalTime() + " min </h6></div><div><h6>" 
+                + "<b>Tempo Total Pressão: </b>" + _pressureRepository.getTotalTime()
+                + " min</h6></div> ";
+           
             var tempTable = GenerateTableForTemperature() + "<br> <br> <br>";
             var pressureTable = GenerateTableForPressure() + "<br> <br> <br>";
             var vacuumTable = GenerateTableForVacuum() + "<br> <br>";
@@ -82,7 +87,8 @@ namespace RecipeConfigurationApp.File
                 try
                 {
                     string html = header +
-                       chart1 + tempTable + pressureTable + vacuumTable +
+                       chart1 + tempTotalValue +
+                       tempTable + pressureTable+ vacuumTable+
                        vacuumChartValues + temperatureChartValues + pressureChartValues +
                        includeJS + footer + "</html> ";
                     htmlToPdf.PageHeaderHtml = GenerateHeader();
