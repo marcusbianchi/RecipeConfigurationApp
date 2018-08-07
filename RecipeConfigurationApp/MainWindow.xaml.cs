@@ -51,7 +51,6 @@ namespace RecipeConfigurationApp
             _gridConfiguraitonRepository = new GridConfiguraitonRepository();
 
             _temperatures = new ValueRepository<TemperatureValue>(MainWindow_CollectionChanged);
-            //_temperatures.getValues().CollectionChanged += MainWindow_CollectionChanged;
             _temperatureChartManager = new TemperatureChartManager(_temperatures);
 
             _pressures = new ValueRepository<PressureValue>(MainWindow_CollectionChanged);
@@ -79,28 +78,42 @@ namespace RecipeConfigurationApp
 
         private void MainWindow_CollectionChanged()
         {
+            try
+            {
 
-            if (currentStatus == "Temperature")
-            {
-                _temperatureChartManager.PlotValues(valueChart);
+                if (currentStatus == "Temperature")
+                {
+                    _temperatureChartManager.PlotValues(valueChart);
+                }
+                else if (currentStatus == "Pressure")
+                {
+                    _pressureChartManager.PlotValues(valueChart);
+                }
+                else if (currentStatus == "Vacuum")
+                {
+                    _vacuumChartManager.PlotValues(valueChart);
+                }
             }
-            else if (currentStatus == "Pressure")
+            catch (Exception ex)
             {
-                _pressureChartManager.PlotValues(valueChart);
+                MessageBox.Show("An error has occured:" + ex.Message, "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            else if (currentStatus == "Vacuum")
-            {
-                _vacuumChartManager.PlotValues(valueChart);
-            }
-
         }
 
         private void btnPressure_Click(object sender, RoutedEventArgs e)
         {
-            currentStatus = "Pressure";
-            TotalTIme.Text = "Tempo total: " + _pressures.getTotalTime().ToString();
-            UpdateGrid();
-            MainWindow_CollectionChanged();
+            try
+            {
+                currentStatus = "Pressure";
+                TotalTIme.Text = "Dif de Tempo com a Temperatura: " + (_temperatures.getTotalTime() - _pressures.getTotalTime()).ToString();
+                TotalTIme.Text += " | Tempo total: " + _pressures.getTotalTime().ToString();
+                UpdateGrid();
+                MainWindow_CollectionChanged();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error has occured:" + ex.Message, "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void btnTemperature_Click(object sender, RoutedEventArgs e)
@@ -115,7 +128,8 @@ namespace RecipeConfigurationApp
         private void btnVacuum_Click(object sender, RoutedEventArgs e)
         {
             currentStatus = "Vacuum";
-            TotalTIme.Text = "Tempo total: "+ _vacuums.getTotalTime().ToString();
+            TotalTIme.Text = "Dif de Tempo com a Temperatura: " + (_temperatures.getTotalTime() - _vacuums.getTotalTime()).ToString();
+            TotalTIme.Text += " | Tempo total: " + _vacuums.getTotalTime().ToString();
             UpdateGrid();
             MainWindow_CollectionChanged();
         }
@@ -127,54 +141,69 @@ namespace RecipeConfigurationApp
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            ConfigValue value = _controlManager.getValueFromControls(currentStatus);
-            if (value != null)
+            try
             {
-                switch (currentStatus)
+                ConfigValue value = _controlManager.getValueFromControls(currentStatus);
+                if (value != null)
                 {
-                    case "Vacuum":
-                        _vacuums.addValue(value as VacuumValue);
-                        TotalTIme.Text = "Tempo total: " + _vacuums.getTotalTime().ToString();
-                        break;
-                    case "Pressure":
-                        _pressures.addValue(value as PressureValue);
-                        TotalTIme.Text = "Tempo total: " + _pressures.getTotalTime().ToString();
+                    switch (currentStatus)
+                    {
+                        case "Vacuum":
+                            _vacuums.addValue(value as VacuumValue);
+                            TotalTIme.Text = "Dif de Tempo com a Temperatura: " + (_temperatures.getTotalTime() - _vacuums.getTotalTime()).ToString();
+                            TotalTIme.Text += " | Tempo total: " + _vacuums.getTotalTime().ToString();
+                            break;
+                        case "Pressure":
+                            _pressures.addValue(value as PressureValue);
+                            TotalTIme.Text = "Dif de Tempo com a Temperatura: " + (_temperatures.getTotalTime() - _pressures.getTotalTime()).ToString();
+                            TotalTIme.Text += " | Tempo total: " + _pressures.getTotalTime().ToString();
+                            break;
+                        case "Temperature":
+                            _temperatures.addValue(value as TemperatureValue);
+                            TotalTIme.Text = "Tempo total: " + _temperatures.getTotalTime().ToString();
 
-                        break;
-                    case "Temperature":
-                        _temperatures.addValue(value as TemperatureValue);
-                        TotalTIme.Text = "Tempo total: " + _temperatures.getTotalTime().ToString();
-
-                        break;
-                    default:
-                        throw new FormatException("Data Type Not Found");
+                            break;
+                        default:
+                            throw new FormatException("Data Type Not Found");
+                    }
                 }
-            }
-            else
-                MessageBox.Show("Dados Invalidos", "Dados Inválidos");
+                else
+                    MessageBox.Show("Dados Invalidos", "Dados Inválidos");
 
-            ValueGrid.Items.Refresh();
+                ValueGrid.Items.Refresh();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Dados Invalidos");
+            }
         }
 
         private void Excluir_Click(object sender, RoutedEventArgs e)
         {
-            var Id = _controlManager.GetIdToRemove();
-            if (!String.IsNullOrEmpty(Id))
+            try
             {
-                switch (currentStatus)
+                var Id = _controlManager.GetIdToRemove();
+                if (!String.IsNullOrEmpty(Id))
                 {
-                    case "Vacuum":
-                        _vacuums.deleveValue(Convert.ToInt32(Id));
-                        break;
-                    case "Pressure":
-                        _pressures.deleveValue(Convert.ToInt32(Id));
-                        break;
-                    case "Temperature":
-                        _temperatures.deleveValue(Convert.ToInt32(Id));
-                        break;
-                    default:
-                        throw new FormatException("Data Type Not Found");
+                    switch (currentStatus)
+                    {
+                        case "Vacuum":
+                            _vacuums.deleveValue(Convert.ToInt32(Id));
+                            break;
+                        case "Pressure":
+                            _pressures.deleveValue(Convert.ToInt32(Id));
+                            break;
+                        case "Temperature":
+                            _temperatures.deleveValue(Convert.ToInt32(Id));
+                            break;
+                        default:
+                            throw new FormatException("Data Type Not Found");
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error has occured:" + ex.Message, "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -196,76 +225,110 @@ namespace RecipeConfigurationApp
 
         private void SaveFile_Click(object sender, RoutedEventArgs e)
         {
-
-            SaveFileDialog dialog = new SaveFileDialog()
+            try
             {
-                Filter = "Text Files(*.txt)|*.txt|All(*.*)|*",
-                FileName = currentFileName
+                SaveFileDialog dialog = new SaveFileDialog()
+                {
+                    Filter = "Text Files(*.txt)|*.txt|All(*.*)|*",
+                    FileName = currentFileName
 
-            };
+                };
 
 
-            if (dialog.ShowDialog() == true)
+                if (dialog.ShowDialog() == true)
+                {
+                    var fileName = dialog.FileName;
+                    if (System.IO.File.Exists(fileName))
+                        System.IO.File.Delete(fileName);
+                    _fileControl.SaveToFile(fileName);
+                    currentFileName = System.IO.Path.GetFileName(fileName);
+                }
+                if (!String.IsNullOrEmpty(currentFileName))
+                    RecipeName.Text = currentFileName.Split('.')[0];
+            }
+            catch (Exception ex)
             {
-                var fileName = dialog.FileName;
-                if (System.IO.File.Exists(fileName))
-                    System.IO.File.Delete(fileName);
-                _fileControl.SaveToFile(fileName);
+                MessageBox.Show("An error has occured:" + ex.Message, "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void SavePDF_Click(object sender, RoutedEventArgs e)
         {
-
-            SaveFileDialog dialog = new SaveFileDialog()
+            try
             {
-                Filter = "PDF Files(*.pdf)|*.pdf|All(*.*)|*",
-                FileName = currentFileName.Split('.')[0] + ".pdf"
-            };
-            if (dialog.ShowDialog() == true)
-            {
-                new Thread(() =>
+                SaveFileDialog dialog = new SaveFileDialog()
                 {
-                    try
-                    {
-                        string fileName = System.IO.Path.GetFullPath(dialog.FileName);
-                        var reportName = dialog.SafeFileName;
-                        if (System.IO.File.Exists(fileName))
-                            System.IO.File.Delete(fileName);
-                        _pdfControl.SaveToPDF(fileName, reportName);
-                        MessageBox.Show("Exportação Concuida com Sucesso", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("An error has occured:" + ex.Message, "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                }).Start();
+                    Filter = "PDF Files(*.pdf)|*.pdf|All(*.*)|*",
+                    FileName = currentFileName == null ? null : currentFileName.Split('.')[0] + ".pdf"
+                };
+                if (dialog.ShowDialog() == true)
+                {
+
+                    MessageBox.Show("Aguarde a Exportação do Arquivo", "Aguarde");
+
+                    string fileName = System.IO.Path.GetFullPath(dialog.FileName);
+                    var reportName = dialog.SafeFileName;
+                    if (System.IO.File.Exists(fileName))
+                        System.IO.File.Delete(fileName);
+                    _pdfControl.SaveToPDF(fileName, reportName);
+                    MessageBox.Show("Exportação Concuida com Sucesso", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error has occured:" + ex.Message, "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void CheckFile_Click(object sender, RoutedEventArgs e)
+        {
+
+            try
+            {
+                MessageBox.Show("Gerando Visualização", "Aguarde");
+                string reportName = currentFileName == null ? null : currentFileName;
+                _pdfControl.SaveToHTML(reportName);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error has occured:" + ex.Message, "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
         }
 
 
         private void ReadFile_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog dialog = new OpenFileDialog()
+            try
             {
-                Filter = "Text Files(*.txt)|*.txt|All(*.*)|*",
-
-            };
-
-            if (dialog.ShowDialog() == true)
-            {
-                var fileName = dialog.FileName;
-                currentFileName = System.IO.Path.GetFileName(fileName);
-                if (System.IO.File.Exists(fileName))
+                OpenFileDialog dialog = new OpenFileDialog()
                 {
-                    _fileControl.ReadFromFile(fileName);
+                    Filter = "Text Files(*.txt)|*.txt|All(*.*)|*",
+
+                };
+
+                if (dialog.ShowDialog() == true)
+                {
+                    var fileName = dialog.FileName;
+                    currentFileName = System.IO.Path.GetFileName(fileName);
+                    if (System.IO.File.Exists(fileName))
+                    {
+                        _fileControl.ReadFromFile(fileName);
+                    }
                 }
+                TotalTIme.Text = "Tempo total: " + _temperatures.getTotalTime().ToString();
+                if (!String.IsNullOrEmpty(currentFileName))
+                    RecipeName.Text = currentFileName.Split('.')[0];
+                ValueGrid.Items.Refresh();
+                MainWindow_CollectionChanged();
             }
-            TotalTIme.Text = "Tempo total: " +_temperatures.getTotalTime().ToString();
-
-            ValueGrid.Items.Refresh();
-            MainWindow_CollectionChanged();
-
+            catch (Exception ex)
+            {
+                MessageBox.Show("An error has occured:" + ex.Message, "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
+
+
     }
 }

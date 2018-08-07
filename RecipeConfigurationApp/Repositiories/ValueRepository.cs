@@ -57,6 +57,11 @@ namespace RecipeConfigurationApp.Repositiories
                         {
                             convValue.Taxa = (-Convert.ToDouble(convValue.Taxa, CultureInfo.InvariantCulture)).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
                         }
+
+                        if (setPoint > lastSetPoint && Convert.ToDouble(convValue.Taxa, CultureInfo.InvariantCulture) < 0)
+                        {
+                            convValue.Taxa = Math.Abs(Convert.ToDouble(convValue.Taxa, CultureInfo.InvariantCulture)).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+                        }
                     }
                     value = (T)Convert.ChangeType(convValue, typeof(T));
                 }
@@ -168,7 +173,7 @@ namespace RecipeConfigurationApp.Repositiories
 
         public int getTotalTime()
         {
-            int total = 1;
+            int total = 0;
             foreach (var item in _values.Cast<ConfigValue>())
             {
                 total += Convert.ToInt32(item.Tempo);

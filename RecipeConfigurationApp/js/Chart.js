@@ -36,7 +36,7 @@ $.plot("#ChartDiv1", [
 ], {
         xaxis: {
             min: 1,
-            max: topx[0]
+            max: topx[topx.length-1]
         },
         yaxes: [{
             position: "left", tickLength: 0, font: {
@@ -54,7 +54,11 @@ $.plot("#ChartDiv1", [
             }
         }
         ],
-        legend: { position: "ne" }
+        legend: {
+            position: "ne",
+            container: $("#legendChart"),
+            noColumns: 3
+        }
     }
 );
 

@@ -105,11 +105,11 @@ namespace RecipeConfigurationApp.File
                 tempValue.Tipo = type;
                 tempValue.SetPoint = String.IsNullOrEmpty(values[1])? null : Convert.ToDouble(values[1], System.Globalization.CultureInfo.InvariantCulture).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
                 tempValue.Taxa = String.IsNullOrEmpty(values[2]) ? null : Convert.ToDouble(values[2], System.Globalization.CultureInfo.InvariantCulture).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
-                tempValue.Tempo = values[3];
+                tempValue.Tempo = String.IsNullOrEmpty(values[3]) ? null : Convert.ToInt32(values[3], System.Globalization.CultureInfo.InvariantCulture).ToString();
                 tempValue.Tolerancia = String.IsNullOrEmpty(values[4]) ? null : Convert.ToDouble(values[4], System.Globalization.CultureInfo.InvariantCulture).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
                 tempValue.TxMinima = String.IsNullOrEmpty(values[5]) ? null : Convert.ToDouble(values[5], System.Globalization.CultureInfo.InvariantCulture).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
                 tempValue.TxMaxima = String.IsNullOrEmpty(values[6]) ? null : Convert.ToDouble(values[6], System.Globalization.CultureInfo.InvariantCulture).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
-                tempValue.TempoHold = String.IsNullOrEmpty(values[7]) ? null : Convert.ToDouble(values[7], System.Globalization.CultureInfo.InvariantCulture).ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+                tempValue.TempoHold = String.IsNullOrEmpty(values[7]) ? null : Convert.ToInt32(values[7].Split('.')[0].Split(',')[0]).ToString();
                 _temperatureRepository.addValue(tempValue);
                 i += 10;
                 line = sr.ReadLine();

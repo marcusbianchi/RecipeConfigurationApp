@@ -9,5 +9,6 @@ namespace RecipeConfigurationApp.File
     interface IPDFControl
     {
         void SaveToPDF(string path, string reportName);
+        void SaveToHTML(string reportName);
     }
 }

@@ -1,4 +1,5 @@
-﻿using LiveCharts.Wpf;
+﻿
+using OxyPlot.Wpf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +11,7 @@ namespace RecipeConfigurationApp.Managers
 {
     public abstract class AChartManager
     {
-        private readonly double range = 0.01;
-        public abstract void PlotValues(Chart chart);
+        public abstract void PlotValues(OxyPlot.Wpf.Plot chart);
 
         internal (List<double>, List<double>) GenerateIncreasingValue(double? startTime, double? startPoint, double SetPoint, double rate)
         {
@@ -20,8 +20,8 @@ namespace RecipeConfigurationApp.Managers
             if (startTime == null)
             {
                 startPoint = 0;
-                startTime = 1;
-                xValues.Add(1);
+                startTime = 0;
+                xValues.Add(0);
                 yValues.Add(0);
             }
             int tempo = Convert.ToInt32(Math.Abs(SetPoint - startPoint.Value) / Math.Abs(rate));
@@ -45,8 +45,8 @@ namespace RecipeConfigurationApp.Managers
             List<double> yValues = new List<double>();
             if (startTime == null)
             {
-                startTime = 1;
-                xValues.Add(1);
+                startTime = 0;
+                xValues.Add(0);
                 yValues.Add(SetPoint);
 
             }

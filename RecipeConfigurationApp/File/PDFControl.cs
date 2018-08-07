@@ -37,7 +37,7 @@ namespace RecipeConfigurationApp.File
             _pressureChartManager = pressureChartManager;
 
         }
-        public void SaveToPDF(string path, string reportName)
+        public string GenerateToPDF(string reportName)
         {
             string JQLibLocation = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\js\\jquery.js";
 
@@ -51,21 +51,23 @@ namespace RecipeConfigurationApp.File
                                "<script src=\"file:///" + JLibLocation + "\"></script>" +
                                //"<script src=\"https://cdn.plot.ly/plotly-latest.min.js\"></script>"+
                                "</head>" +
-                               "<body style=\"font-family: Arial !important;\" > " +
-                               "<center>"+
-                               "<div> <h1>Receita: " + reportName.Split('.')[0] + "</h2></div>"+
-                               "<div> <p>Receita criada por: " + userName + " na data :"+DateTime.Now.ToString() + "</p></div>";
+                               "<body style=\"font-family: Arial !important;font-size: 14px !important;\" > " +
+                               "<center>" +
+                               "<div> <h1><b>Resumo da Receita</b></h1></div>" +
+                               "</center>" +
+                               "<div> <p><b>Receita:</b> " + reportName.Split('.')[0] + "</p></div>" +
+                               "<div> <p><b>Responsável:</b> " + userName + " " + "</p></div>" +
+                              "<div> <p><b>Última Atualização:</b>" + DateTime.Now.ToString() + "</p></div>" +
+                              "<div> <p><b>Tempo Total:</b> " + _temperatureRepository.getTotalTime() + " min</div>" +
+                               "<center>";
 
 
 
 
-            var chart1 = " <div id=\"ChartDiv1\"style=\"width: 900px; height: 350px; \"></div>";
+            var chart1 = " <div id=\"ChartDiv1\"style=\"width: 900px; height: 350px; \"></div> " +
+                 "<div id =\"legendChart\"style=\"width: 900px; height: 50px; \"></div>";
 
-            var tempTotalValue = "<div> <h6> <b>Tempo Total Temperatura: </b>" + _temperatureRepository.getTotalTime() +" min</h6></div><div><h6>"
-                + "<b>Tempo Total Vácuo: </b>" + _vacauumRepository.getTotalTime() + " min </h6></div><div><h6>" 
-                + "<b>Tempo Total Pressão: </b>" + _pressureRepository.getTotalTime()
-                + " min</h6></div> ";
-           
+
             var tempTable = GenerateTableForTemperature() + "<br> <br> <br>";
             var pressureTable = GenerateTableForPressure() + "<br> <br> <br>";
             var vacuumTable = GenerateTableForVacuum() + "<br> <br>";
@@ -75,39 +77,56 @@ namespace RecipeConfigurationApp.File
             var pressureChartValues = generateValuesToChartPressure();
 
 
-            string footer = "</center>" +
-                            "</body>";
+            string footer = "</body>";
             //string JsLocation = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\js\\chart.js";
             string JsLocation = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\js\\chart.js";
             string includeJS = "<script src=\"file:///" + JsLocation + "\"></script>";
 
+
+            string html = header +
+               chart1 + "</center>" +
+               tempTable + pressureTable + vacuumTable +
+               vacuumChartValues + temperatureChartValues + pressureChartValues +
+               includeJS + footer + "</html> ";
+            return html;
+
+        }
+
+        public void SaveToPDF(string path, string reportName)
+        {
             using (System.IO.StreamWriter file =
-           new System.IO.StreamWriter(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)+"\\log.txt", true))
+         new System.IO.StreamWriter(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\log.txt", true))
             {
                 try
                 {
-                    string html = header +
-                       chart1 + tempTotalValue +
-                       tempTable + pressureTable+ vacuumTable+
-                       vacuumChartValues + temperatureChartValues + pressureChartValues +
-                       includeJS + footer + "</html> ";
+                    string html = GenerateToPDF(reportName);
                     htmlToPdf.PageHeaderHtml = GenerateHeader();
-                    //var pdfBytes = htmlToPdf.GeneratePdf(html);
-                    htmlToPdf.CustomWkHtmlArgs = " --javascript-delay 1000 --header-spacing 25 ";
-                    htmlToPdf.Quiet = false;
-                    file.WriteLine(DateTime.Now + " :Path: {0}", path);
-                    htmlToPdf.LogReceived += (sender, e) =>
-                    {
-                        Console.WriteLine("WkHtmlToPdf Log: {0}", e.Data);
-                        file.WriteLine(DateTime.Now + " : WkHtmlToPdf Log: {0}", e.Data);
-                    };
-                    System.IO.File.WriteAllText("recipe.html", html);
+                    htmlToPdf.CustomWkHtmlArgs = " --javascript-delay 500 --header-spacing 25 ";                  
                     System.IO.File.WriteAllBytes(path, htmlToPdf.GeneratePdf(html));
-                    //return htmlToPdf.GeneratePdf(html);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
-                    file.WriteLine(DateTime.Now + " "+ ex.ToString());
+                    file.WriteLine(DateTime.Now + " " + ex.ToString());
+                }
+            }
+        }
+
+
+        public void SaveToHTML(string reportName)
+        {
+            using (System.IO.StreamWriter file =
+         new System.IO.StreamWriter(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\log.txt", true))
+            {
+                try
+                {
+                    string html = GenerateToPDF(reportName);                 
+                    System.IO.File.WriteAllText("recipe.html", html);
+                    System.Diagnostics.Process.Start("recipe.html");
+
+                }
+                catch (Exception ex)
+                {
+                    file.WriteLine(DateTime.Now + " " + ex.ToString());
                 }
             }
         }
@@ -118,7 +137,7 @@ namespace RecipeConfigurationApp.File
             var tableHeader = "<table style=\"table align: center; width: 100 %  display: block;margin - left: auto;margin - right: auto;" +
                               " text-align: left;  border: 1px solid black; border-collapse: collapse; \">" +
                               " <caption style=\" background-color: #ffffff; border: 1px solid black;\"><strong>Valores de Temperatura</strong></caption>" +
-                              "<tr style=\" background-color: #6699FF; border: 1px solid black;\">" +
+                              "<tr style=\" border: 1px solid black;\">" +
                               "<th style=\"border: 1px solid black;\">Tipo</th>" +
                               "<th style=\"border: 1px solid black;\">SetPoint (ºC)</th>" +
                               "<th style=\"border: 1px solid black;\">Taxa (Cº/min)</th>" +
@@ -155,8 +174,8 @@ namespace RecipeConfigurationApp.File
 
             var tableHeader = "<table style=\"table align: center; width: 100 %  display: block;margin - left: auto;margin - right: auto;" +
                               " text-align: left;  border: 1px solid black; border-collapse: collapse; \">" +
-                               " <caption style=\" background-color: #ffffff; border: 1px solid black;\"><strong>Valores de Vacuo</strong></caption>" +
-                                "<tr style=\" background-color: #6699FF; border: 1px solid black;\">" +
+                               " <caption style=\" background-color: #ffffff; border: 1px solid black;\"><strong>Valores de Vácuo</strong></caption>" +
+                                "<tr style=\" border: 1px solid black;\">" +
                               "<th style=\"border: 1px solid black;\">Tipo</th>" +
                               "<th style=\"border: 1px solid black;\">SetPoint (bar)</th>" +
                               "<th style=\"border: 1px solid black;\">Taxa (bar/min)</th>" +
@@ -187,7 +206,7 @@ namespace RecipeConfigurationApp.File
             var tableHeader = "<table style=\"table align: center; width: 100 %  display: block;margin - left: auto;margin - right: auto;" +
                                       " text-align: left;  border: 1px solid black; border-collapse: collapse; \">" +
                                       " <caption style=\" background-color: #ffffff; border: 1px solid black;\"><strong>Valores de Pressão</strong></caption>" +
-                                      "<tr style=\" background-color: #6699FF; border: 1px solid black;\">" +
+                                      "<tr style=\"border: 1px solid black;\">" +
                                       "<th style=\"border: 1px solid black;\">Tipo</th>" +
                                       "<th style=\"border: 1px solid black;\">SetPoint (bar)</th>" +
                                       "<th style=\"border: 1px solid black;\">Taxa (bar/min)</th>" +
@@ -218,8 +237,8 @@ namespace RecipeConfigurationApp.File
             var returnString = "<div hidden id=\"pressureXValues\">[";
             List<double> xValues, yValues;
             _pressureChartManager.GenerateValues(out xValues, out yValues);
-        
-            returnString += String.Join(", ", xValues.ToArray().Select(x=>x.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)).ToArray());
+
+            returnString += String.Join(", ", xValues.ToArray().Select(x => x.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)).ToArray());
             returnString += "]</div>";
             returnString += "<div hidden id=\"pressureYValues\">[";
             returnString += String.Join(", ", yValues.ToArray().Select(x => x.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)).ToArray());

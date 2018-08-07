@@ -5,22 +5,25 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:chartingToolkit="clr-namespace:System.Windows.Controls.DataVisualization.Charting;assembly=System.Windows.Controls.DataVisualization.Toolkit"
         xmlns:visualizationToolkit="clr-namespace:System.Windows.Controls.DataVisualization;assembly=System.Windows.Controls.DataVisualization.Toolkit" x:Class="RecipeConfigurationApp.MainWindow"
+        xmlns:oxy="http://oxyplot.org/wpf"
         mc:Ignorable="d"
-        Title="Recipe Configuration Service" Height="auto" Width="1200" Icon="img/aviation-icon.png" WindowStartupLocation="CenterScreen">
+        Title="Recipe Configuration Service v8.7.0920" Height="auto" Width="1200" Icon="img/aviation-icon.png" WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <Image x:Key="MyImage" Source="./img/menu-icon.png"/>
         <ContextMenu x:Key="cmButton">
             <MenuItem Header="Novo" Click="CleanMemory_Click"/>
             <MenuItem Header="Salvar" Click="SaveFile_Click" />
             <MenuItem Header="Carregar" Click="ReadFile_Click"/>
+            <Separator />
+            <MenuItem Header="Visualizar Receita Completa" Click="CheckFile_Click"/>
             <MenuItem Header="Exportar para PDF" Click="SavePDF_Click"/>
         </ContextMenu>
-
 
     </Window.Resources>
     <Border BorderBrush="Black" BorderThickness="0.5">
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="20*"/>
                 <RowDefinition Height="*"/>
@@ -38,7 +41,10 @@
                 <Image Source="./img/aviation-icon.png" Margin="2"  Grid.Column="2"/>
                 <Image Source="./img/SPI_Logo_FundoClaro.png"  Margin="2" Grid.Column="3"/>
             </Grid>
-            <Grid Grid.Row="2">
+            <Border Grid.Row="1" BorderBrush="Black" BorderThickness="0.5">
+                <TextBox Margin="1" Name="RecipeName" IsEnabled="False" TextAlignment="Center" FontWeight="Bold"/>
+            </Border>
+            <Grid Grid.Row="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -48,7 +54,7 @@
                 <Button Grid.Column="0" Content="Temperatura" x:Name="btnTemperature" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" Click="btnTemperature_Click" />
                 <Button Grid.Column="2" Content="Vacuo" x:Name="btnVacuum" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" Click="btnVacuum_Click" />
             </Grid>
-            <Grid Grid.Row="1">
+            <Grid Grid.Row="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="7*"/>
                     <ColumnDefinition Width="4*"/>
@@ -107,10 +113,10 @@
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
-                        <chartingToolkit:Chart  x:Name="valueChart" Margin="1" >
+                        <!--<chartingToolkit:Chart  x:Name="valueChart1" Margin="1" >
                             <chartingToolkit:Chart.PlotAreaStyle>
                                 <Style TargetType="{x:Type Grid}">
-                                    <Setter Property="Background" Value="WhiteSmoke">                                  
+                                    <Setter Property="Background" Value="WhiteSmoke">
                                     </Setter>
                                 </Style>
                             </chartingToolkit:Chart.PlotAreaStyle>
@@ -120,27 +126,156 @@
                             </chartingToolkit:Chart.Axes>
                             <chartingToolkit:Chart.LegendStyle>
                                 <Style TargetType="{x:Type visualizationToolkit:Legend}">
-                                    <Setter Property="Margin" Value="15,0"/>
                                     <Setter Property="Width" Value="0"/>
                                     <Setter Property="Height" Value="0"/>
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                    <Setter Property="BorderBrush" Value="#FFDBDBDB"/>
-                                    <Setter Property="Background">
-                                        <Setter.Value>
-                                            <LinearGradientBrush EndPoint="0.442,0.005" StartPoint="0.558,0.995">
-                                                <GradientStop Color="#FFDBDBDB"/>
-                                                <GradientStop Color="White" Offset="1"/>
-                                            </LinearGradientBrush>
-                                        </Setter.Value>
-                                    </Setter>
                                 </Style>
                             </chartingToolkit:Chart.LegendStyle>
                             <chartingToolkit:LineSeries  IndependentValueBinding="{Binding Key}"
                                                         DependentValueBinding="{Binding Value}"                                                   
-                                                        IsSelectionEnabled="True" Background="Black">
-                            
-                            </chartingToolkit:LineSeries>    
+                                                        IsSelectionEnabled="True"  >
+                                <chartingToolkit:LineSeries.DataPointStyle>
+                                    <Style TargetType="chartingToolkit:DataPoint">
+                                        <Setter Property="Background" Value="#0077CC" />
+                                        <Setter Property="BorderBrush" Value="White"/>
+                                        <Setter Property="BorderThickness" Value="2"/>
+                                        <Setter Property="IsTabStop" Value="False"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="chartingToolkit:LineDataPoint">
+                                                    <Grid x:Name="Root" Opacity="1">
+                                                        <ToolTipService.ToolTip>
+                                                            <StackPanel Margin="2,2,2,2">
+                                                                <ContentControl Content="{TemplateBinding IndependentValue}"/>
+                                                                <ContentControl Content="{TemplateBinding DependentValue}" />
+                                                            </StackPanel>
+                                                        </ToolTipService.ToolTip>
+                                                        <Ellipse StrokeThickness="{TemplateBinding BorderThickness}" 
+                     Stroke="{TemplateBinding BorderBrush}" 
+                     Fill="{TemplateBinding Background}"/>
+                                                    </Grid>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </chartingToolkit:LineSeries.DataPointStyle>
+                            </chartingToolkit:LineSeries>
                         </chartingToolkit:Chart>
+                        <chartingToolkit:Chart  x:Name="valueChart2" Margin="1" >
+                            <chartingToolkit:Chart.PlotAreaStyle>
+                                <Style TargetType="{x:Type Grid}">
+                                    <Setter Property="Background" Value="WhiteSmoke">
+                                    </Setter>
+                                </Style>
+                            </chartingToolkit:Chart.PlotAreaStyle>
+                            <chartingToolkit:Chart.Axes>
+                                <chartingToolkit:LinearAxis Orientation="X" ShowGridLines="True" />
+                                <chartingToolkit:LinearAxis Orientation="y" ShowGridLines="True"/>
+                            </chartingToolkit:Chart.Axes>
+                            <chartingToolkit:Chart.LegendStyle>
+                                <Style TargetType="{x:Type visualizationToolkit:Legend}">
+                                    <Setter Property="Width" Value="0"/>
+                                    <Setter Property="Height" Value="0"/>
+                                </Style>
+                            </chartingToolkit:Chart.LegendStyle>
+                            <chartingToolkit:LineSeries  IndependentValueBinding="{Binding Key}"
+                                                        DependentValueBinding="{Binding Value}"                                                   
+                                                        IsSelectionEnabled="True"  >
+                                <chartingToolkit:LineSeries.DataPointStyle>
+                                    <Style TargetType="chartingToolkit:DataPoint">
+                                        <Setter Property="Background" Value="#0077CC" />
+                                        <Setter Property="BorderBrush" Value="White"/>
+                                        <Setter Property="BorderThickness" Value="2"/>
+                                        <Setter Property="IsTabStop" Value="False"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="chartingToolkit:LineDataPoint">
+                                                    <Grid x:Name="Root" Opacity="1">
+                                                        <ToolTipService.ToolTip>
+                                                            <StackPanel Margin="2,2,2,2">
+                                                                <ContentControl Content="{TemplateBinding IndependentValue}"/>
+                                                                <ContentControl Content="{TemplateBinding DependentValue}" />
+                                                            </StackPanel>
+                                                        </ToolTipService.ToolTip>
+                                                        <Ellipse StrokeThickness="{TemplateBinding BorderThickness}" 
+                     Stroke="{TemplateBinding BorderBrush}" 
+                     Fill="{TemplateBinding Background}"/>
+                                                    </Grid>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </chartingToolkit:LineSeries.DataPointStyle>
+                            </chartingToolkit:LineSeries>
+                        </chartingToolkit:Chart>
+                        <chartingToolkit:Chart  x:Name="valueChart3" Margin="1" >
+                            <chartingToolkit:Chart.PlotAreaStyle>
+                                <Style TargetType="{x:Type Grid}">
+                                    <Setter Property="Background" Value="WhiteSmoke">
+                                    </Setter>
+                                </Style>
+                            </chartingToolkit:Chart.PlotAreaStyle>
+                            <chartingToolkit:Chart.Axes>
+                                <chartingToolkit:LinearAxis Orientation="X" ShowGridLines="True" />
+                                <chartingToolkit:LinearAxis Orientation="y" ShowGridLines="True"/>
+                            </chartingToolkit:Chart.Axes>
+                            <chartingToolkit:Chart.LegendStyle>
+                                <Style TargetType="{x:Type visualizationToolkit:Legend}">
+                                    <Setter Property="Width" Value="0"/>
+                                    <Setter Property="Height" Value="0"/>
+                                </Style>
+                            </chartingToolkit:Chart.LegendStyle>
+                            <chartingToolkit:LineSeries  IndependentValueBinding="{Binding Key}"
+                                                        DependentValueBinding="{Binding Value}"                                                   
+                                                        IsSelectionEnabled="True"  >
+                                <chartingToolkit:LineSeries.DataPointStyle>
+                                    <Style TargetType="chartingToolkit:DataPoint">
+                                        <Setter Property="Background" Value="#0077CC" />
+                                        <Setter Property="BorderBrush" Value="White"/>
+                                        <Setter Property="BorderThickness" Value="2"/>
+                                        <Setter Property="IsTabStop" Value="False"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="chartingToolkit:LineDataPoint">
+                                                    <Grid x:Name="Root" Opacity="1">
+                                                        <ToolTipService.ToolTip>
+                                                            <StackPanel Margin="2,2,2,2">
+                                                                <ContentControl Content="{TemplateBinding IndependentValue}"/>
+                                                                <ContentControl Content="{TemplateBinding DependentValue}" />
+                                                            </StackPanel>
+                                                        </ToolTipService.ToolTip>
+                                                        <Ellipse StrokeThickness="{TemplateBinding BorderThickness}" 
+                     Stroke="{TemplateBinding BorderBrush}" 
+                     Fill="{TemplateBinding Background}"/>
+                                                    </Grid>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </chartingToolkit:LineSeries.DataPointStyle>
+                            </chartingToolkit:LineSeries>
+                        </chartingToolkit:Chart>-->
+                        <oxy:Plot Name="valueChart" IsLegendVisible="False">
+                            <oxy:Plot.Axes>
+                                <oxy:LinearAxis Key="yAxis"
+                                    IsZoomEnabled="False"
+                                    IsPanEnabled="False"
+                                    Position="Left"
+                                    MajorGridlineStyle="Dot"
+                                    MajorGridlineColor="Gray"                     
+                                  />
+                                <oxy:LinearAxis Key="xAxis"
+                                    IsZoomEnabled="False"
+                                    IsPanEnabled="False"
+                                    Position="Bottom"
+                                    MajorGridlineStyle="Dot"
+                                    MajorGridlineColor="Gray"
+                                    />  
+                            </oxy:Plot.Axes>
+                            <oxy:Plot.Series>
+                                <oxy:LineSeries />
+                            </oxy:Plot.Series>
+
+                        </oxy:Plot>
                         <TextBox Grid.Row="1" Margin="1" Name="TotalTIme" IsEnabled="False" TextAlignment="Center"/>
                     </Grid>
                 </Border>
